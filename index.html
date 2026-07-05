@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Russ Bytes - Better Systems. Less Chaos. Stronger Business.</title>
+    <meta name="description" content="I help founder-led businesses remove the friction they didn't know was slowing them down.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* === RESET & BASE === */
+        *, *::before, *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            /* Cappuccino Light Palette */
+            --color-cream: #FDF8F3;
+            --color-latte: #F5EDE4;
+            --color-mauve: #C4A8B8;
+            --color-mauve-soft: #D9C4D4;
+            --color-mauve-deep: #9B7B96;
+            --color-taupe: #6B5B5F;
+            --color-espresso: #3D2E2E;
+            --color-warm-gray: #8C7E82;
+            --color-accent-warm: #E8D5C4;
+            --color-accent-lavender: #E2D8E4;
+
+            --font-main: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            --ease-smooth: cubic-bezier(0.25, 0.1, 0.25, 1.0);
+        }
+
+        html {
+            scroll-behavior: smooth;
+            font-size: 16px;
+            background: var(--color-cream);
+        }
+
+        body {
+            font-family: var(--font-main);
+            color: var(--color-espresso);
+            background: transparent;
+            line-height: 1.6;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* === DOT GRID BACKGROUND === */
+        #dotGrid {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+            background-color: var(--color-cream);
+            background-image:
+                radial-gradient(circle, rgba(155, 123, 150, 0.5) 1.3px, transparent 1.3px);
+            background-size: 32px 32px;
+        }
+
+        #dotCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        body {
+            background: transparent;
+        }
+
+        body > section,
+        body > footer {
+            position: relative;
+            z-index: 2;
+        }
+
+        /* === SCROLL ANIMATIONS === */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.7s var(--ease-smooth), transform 0.7s var(--ease-smooth);
+        }
+
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .reveal-delay-1 { transition-delay: 0.12s; }
+        .reveal-delay-2 { transition-delay: 0.24s; }
+        .reveal-delay-3 { transition-delay: 0.36s; }
+        .reveal-delay-4 { transition-delay: 0.48s; }
+
+        /* Section-specific reveal overrides for varied rhythm */
+        .section-problem .reveal { transition-duration: 0.8s; }
+        .section-method .method-step.reveal { transition-duration: 0.6s; }
+        .section-proof .reveal { transition-duration: 0.9s; }
+        .section-filter .filter-column.reveal { transition-duration: 0.75s; }
+        .section-cta .reveal { transition-duration: 0.85s; }
+
+        /* === HERO === */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 2rem;
+            position: relative;
+        }
+
+        .hero-content {
+            max-width: 800px;
+        }
+
+        .hero-headline {
+            font-size: clamp(2.5rem, 7vw, 5.5rem);
+            font-weight: 700;
+            line-height: 1.05;
+            letter-spacing: -0.03em;
+            margin-bottom: 1.75rem;
+            color: var(--color-espresso);
+        }
+
+        .hero-headline span {
+            display: block;
+            opacity: 0;
+            transform: translateY(24px);
+            animation: heroStagger 0.9s var(--ease-smooth) forwards;
+        }
+
+        .hero-headline span:nth-child(1) { animation-delay: 0.15s; }
+        .hero-headline span:nth-child(2) { animation-delay: 0.4s; }
+        .hero-headline span:nth-child(3) { animation-delay: 0.65s; }
+
+        @keyframes heroStagger {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .hero-subcopy {
+            font-size: clamp(1.05rem, 2.2vw, 1.35rem);
+            color: var(--color-taupe);
+            max-width: 500px;
+            margin: 0 auto 2.75rem;
+            line-height: 1.65;
+            font-weight: 400;
+            opacity: 0;
+            animation: heroStagger 0.9s var(--ease-smooth) 0.85s forwards;
+        }
+
+        .hero-cta {
+            opacity: 0;
+            animation: heroStagger 0.9s var(--ease-smooth) 1.05s forwards;
+        }
+
+        /* === BUTTON === */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1.1rem 2.75rem;
+            font-family: var(--font-main);
+            font-size: 1rem;
+            font-weight: 500;
+            color: var(--color-cream);
+            background: var(--color-espresso);
+            border: none;
+            border-radius: 100px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background 0.35s var(--ease-smooth), transform 0.35s var(--ease-smooth), box-shadow 0.35s var(--ease-smooth);
+            letter-spacing: -0.01em;
+            box-shadow: 0 2px 16px rgba(61, 46, 46, 0.18);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.06), transparent);
+            transition: left 0.5s var(--ease-smooth);
+        }
+
+        .btn:hover {
+            background: var(--color-taupe);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 28px rgba(61, 46, 46, 0.22);
+        }
+
+        .btn:hover::after {
+            left: 100%;
+        }
+
+        .btn:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 10px rgba(61, 46, 46, 0.18);
+        }
+
+        /* === SECTIONS === */
+        section {
+            padding: 7rem 2rem;
+            max-width: 720px;
+            margin: 0 auto;
+        }
+
+        .section-problem,
+        .section-proof,
+        .section-cta {
+            max-width: 600px;
+        }
+
+        .section-method {
+            max-width: 640px;
+        }
+
+        .section-filter {
+            max-width: 880px;
+        }
+
+        .section-label {
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: var(--color-mauve-deep);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 1.5rem;
+        }
+
+        .section-headline {
+            font-size: clamp(1.65rem, 4vw, 2.4rem);
+            font-weight: 600;
+            line-height: 1.15;
+            letter-spacing: -0.025em;
+            margin-bottom: 1.5rem;
+            color: var(--color-espresso);
+        }
+
+        .section-body {
+            font-size: 1.125rem;
+            color: var(--color-taupe);
+            line-height: 1.75;
+        }
+
+        .section-body p + p {
+            margin-top: 1.15rem;
+        }
+
+        /* === PROBLEM SECTION === */
+        .problem-text {
+            font-size: clamp(1.6rem, 3.8vw, 2.5rem);
+            font-weight: 600;
+            line-height: 1.2;
+            letter-spacing: -0.025em;
+            margin-bottom: 2rem;
+            color: var(--color-espresso);
+        }
+
+        /* === METHOD SECTION === */
+        .method-steps {
+            display: flex;
+            flex-direction: column;
+            gap: 3.5rem;
+            margin-top: 3rem;
+        }
+
+        .method-step {
+            display: flex;
+            gap: 1.75rem;
+            align-items: flex-start;
+            padding: 1.5rem 0;
+            border-bottom: 1px solid rgba(196, 168, 184, 0.2);
+            transition: border-color 0.3s var(--ease-smooth);
+        }
+
+        .method-step:hover {
+            border-bottom-color: rgba(196, 168, 184, 0.4);
+        }
+
+        .method-step:last-child {
+            border-bottom: none;
+        }
+
+        .step-number {
+            font-size: clamp(2.8rem, 5.5vw, 4rem);
+            font-weight: 300;
+            color: var(--color-mauve);
+            line-height: 1;
+            flex-shrink: 0;
+            min-width: 72px;
+            font-variant-numeric: tabular-nums;
+            letter-spacing: -0.02em;
+        }
+
+        .step-content h3 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 0.4rem;
+            letter-spacing: -0.01em;
+            color: var(--color-espresso);
+        }
+
+        .step-content p {
+            font-size: 1rem;
+            color: var(--color-warm-gray);
+            line-height: 1.65;
+            max-width: 400px;
+        }
+
+        /* === PROOF SECTION === */
+        .proof-stats {
+            display: flex;
+            gap: 1.5rem;
+            margin-top: 2.5rem;
+            flex-wrap: wrap;
+            align-items: center;
+            transition: transform 0.5s var(--ease-smooth);
+        }
+
+        .proof-stats:hover {
+            transform: translateY(-2px);
+        }
+
+        .stat-item {
+            font-size: 0.875rem;
+            color: var(--color-mauve-deep);
+            letter-spacing: 0.03em;
+            font-weight: 500;
+        }
+
+        .stat-divider {
+            color: var(--color-mauve-soft);
+            font-size: 0.75rem;
+        }
+
+        /* === FILTER SECTION === */
+        .filter-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3.5rem;
+            margin-top: 3rem;
+        }
+
+        @media (max-width: 768px) {
+            .filter-grid {
+                grid-template-columns: 1fr;
+                gap: 2.5rem;
+            }
+        }
+
+        .filter-column h3 {
+            font-size: 0.95rem;
+            font-weight: 600;
+            margin-bottom: 1.25rem;
+            letter-spacing: -0.01em;
+        }
+
+        .filter-column.ideal h3 {
+            color: var(--color-espresso);
+        }
+
+        .filter-column.not-ideal h3 {
+            color: var(--color-warm-gray);
+        }
+
+        .filter-list {
+            list-style: none;
+        }
+
+        .filter-list li {
+            font-size: 0.95rem;
+            line-height: 1.7;
+            padding-left: 1.5rem;
+            position: relative;
+            margin-bottom: 0.65rem;
+            transition: transform 0.3s var(--ease-smooth), opacity 0.3s var(--ease-smooth);
+        }
+
+        .filter-list li:hover {
+            transform: translateX(4px);
+        }
+
+        .filter-column.ideal li:hover {
+            opacity: 0.85;
+        }
+
+        .filter-column.not-ideal li:hover {
+            opacity: 0.7;
+        }
+
+        .filter-list li::before {
+            content: "→";
+            position: absolute;
+            left: 0;
+            font-weight: 500;
+        }
+
+        .filter-column.ideal li {
+            color: var(--color-espresso);
+        }
+
+        .filter-column.ideal li::before {
+            color: var(--color-mauve-deep);
+        }
+
+        .filter-column.not-ideal li {
+            color: var(--color-warm-gray);
+        }
+
+        .filter-column.not-ideal li::before {
+            color: var(--color-mauve-soft);
+        }
+
+        /* === CTA SECTION === */
+        .section-cta {
+            text-align: center;
+            padding: 9rem 2rem;
+        }
+
+        .cta-headline {
+            font-size: clamp(1.5rem, 3.5vw, 2.3rem);
+            font-weight: 600;
+            line-height: 1.25;
+            letter-spacing: -0.025em;
+            margin-bottom: 2.25rem;
+            max-width: 520px;
+            margin-left: auto;
+            margin-right: auto;
+            color: var(--color-espresso);
+        }
+
+        .cta-microcopy {
+            font-size: 0.85rem;
+            color: var(--color-warm-gray);
+            margin-top: 1.25rem;
+            letter-spacing: 0.02em;
+        }
+
+        /* === FOOTER === */
+        footer {
+            padding: 3rem 2rem 2.5rem;
+            text-align: center;
+        }
+
+        .footer-copy {
+            font-size: 0.75rem;
+            color: var(--color-mauve-soft);
+            letter-spacing: 0.04em;
+        }
+
+        /* === REDUCED MOTION === */
+        @media (prefers-reduced-motion: reduce) {
+            #dotGrid {
+                opacity: 0.5;
+            }
+            #dotCanvas {
+                display: none;
+            }
+            .reveal {
+                opacity: 1;
+                transform: none;
+                transition: none;
+            }
+            .hero-headline span,
+            .hero-subcopy,
+            .hero-cta {
+                opacity: 1;
+                transform: none;
+                animation: none;
+            }
+        }
+
+        /* === SELECTION === */
+        ::selection {
+            background: var(--color-mauve);
+            color: var(--color-cream);
+        }
+
+        /* === SCROLLBAR === */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--color-cream);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--color-mauve-soft);
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--color-mauve);
+        }
+    </style>
+</head>
+<body>
+    <div id="dotGrid"></div>
+    <canvas id="dotCanvas"></canvas>
+
+    <!-- HERO -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1 class="hero-headline">
+                <span>Better systems.</span>
+                <span>Less chaos.</span>
+                <span>Stronger business.</span>
+            </h1>
+            <p class="hero-subcopy">
+                I help founder-led businesses remove the friction they didn't know was slowing them down.
+            </p>
+            <div class="hero-cta">
+                <a href="https://cal.com/russvn/aiaudit" class="btn" target="_blank" rel="noopener">Request an Audit</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- PROBLEM -->
+    <section class="section-problem">
+        <div class="reveal">
+            <p class="problem-text">Your business grew.<br>Your systems didn't.</p>
+        </div>
+        <div class="section-body reveal reveal-delay-1">
+            <p>Most founders don't need more tools. They need someone to look at what they have, find the constraint, and fix it.</p>
+            <p>I do that with AI. But AI isn't the point. The point is you stop fighting your own business.</p>
+        </div>
+    </section>
+
+    <!-- METHOD -->
+    <section class="section-method">
+        <div class="reveal">
+            <p class="section-label">How I work</p>
+        </div>
+        <div class="method-steps">
+            <div class="method-step reveal">
+                <span class="step-number">01</span>
+                <div class="step-content">
+                    <h3>Diagnose</h3>
+                    <p>I find the real bottleneck, not the symptom.</p>
+                </div>
+            </div>
+            <div class="method-step reveal">
+                <span class="step-number">02</span>
+                <div class="step-content">
+                    <h3>Design</h3>
+                    <p>I build a system that fits how you actually work.</p>
+                </div>
+            </div>
+            <div class="method-step reveal">
+                <span class="step-number">03</span>
+                <div class="step-content">
+                    <h3>Implement</h3>
+                    <p>I put it in place, test it, and adjust until it runs.</p>
+                </div>
+            </div>
+            <div class="method-step reveal">
+                <span class="step-number">04</span>
+                <div class="step-content">
+                    <h3>Grow</h3>
+                    <p>You operate with less friction and more capacity.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- PROOF -->
+    <section class="section-proof">
+        <div class="reveal">
+            <p class="section-headline">I'm not an AI consultant who learned tools last year.</p>
+        </div>
+        <div class="section-body reveal reveal-delay-1">
+            <p>I spent 16 years in mechanical engineering, project management, and manufacturing. Building systems. Improving processes. Becoming the person people trusted to diagnose what was actually broken.</p>
+            <p>AI is just the newest tool. Systems thinking is what I bring.</p>
+        </div>
+        <div class="proof-stats reveal reveal-delay-2">
+            <span class="stat-item">16 years</span>
+            <span class="stat-divider">·</span>
+            <span class="stat-item">Systems built</span>
+            <span class="stat-divider">·</span>
+            <span class="stat-item">Founder-led businesses</span>
+        </div>
+    </section>
+
+    <!-- FILTER -->
+    <section class="section-filter">
+        <div class="reveal">
+            <p class="section-label">Who this is for</p>
+        </div>
+        <div class="filter-grid">
+            <div class="filter-column ideal reveal reveal-delay-1">
+                <h3>This works best if:</h3>
+                <ul class="filter-list">
+                    <li>You're a founder who built something real</li>
+                    <li>Your business runs on you more than it should</li>
+                    <li>You're willing to change how things work</li>
+                    <li>You want less chaos, not more tools</li>
+                </ul>
+            </div>
+            <div class="filter-column not-ideal reveal reveal-delay-2">
+                <h3>Not a fit if:</h3>
+                <ul class="filter-list">
+                    <li>You want a quick fix</li>
+                    <li>You're not ready to change your processes</li>
+                    <li>You expect results without involvement</li>
+                    <li>You want the cheapest option</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="section-cta">
+        <div class="reveal">
+            <p class="cta-headline">If your business has grown but your systems haven't, this is built for exactly that.</p>
+        </div>
+        <div class="reveal reveal-delay-1">
+            <a href="https://cal.com/russvn/aiaudit" class="btn" target="_blank" rel="noopener">Request an Audit</a>
+            <p class="cta-microcopy">Takes 3 minutes. No pressure. No sales pitch.</p>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+        <p class="footer-copy">© 2026</p>
+    </footer>
+
+    <script>
+        // === SCROLL REVEAL ===
+        const revealElements = document.querySelectorAll('.reveal');
+
+        const revealObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    revealObserver.unobserve(entry.target);
+                }
+            });
+        }, {
+            threshold: 0.2,
+            rootMargin: '0px 0px -50px 0px'
+        });
+
+        revealElements.forEach(el => revealObserver.observe(el));
+
+        // === DOT GRID BACKGROUND ===
+        (function() {
+            const canvas = document.getElementById('dotCanvas');
+            const ctx = canvas.getContext('2d');
+            let width, height;
+            const spacing = 32;
+            const baseRadius = 1.3;
+            const maxRadius = 3;
+            const hoverRadius = 150;
+            let mouse = { x: -9999, y: -9999 };
+            let animating = true;
+
+            function resize() {
+                width = canvas.width = window.innerWidth;
+                height = canvas.height = window.innerHeight;
+            }
+
+            function draw() {
+                ctx.clearRect(0, 0, width, height);
+
+                const cols = Math.ceil(width / spacing) + 1;
+                const rows = Math.ceil(height / spacing) + 1;
+
+                for (let r = 0; r < rows; r++) {
+                    for (let c = 0; c < cols; c++) {
+                        const x = c * spacing;
+                        const y = r * spacing;
+                        const dx = mouse.x - x;
+                        const dy = mouse.y - y;
+                        const dist = Math.sqrt(dx * dx + dy * dy);
+
+                        if (dist < hoverRadius) {
+                            const pct = 1 - (dist / hoverRadius);
+                            const ease = pct * pct * (3 - 2 * pct);
+                            const radius = 1.3 + (3 - 1.3) * ease;
+
+                            const r1 = 155, g1 = 123, b1 = 150;
+                            const r2 = 130, g2 = 105, b2 = 125;
+                            const cr = Math.round(r1 + (r2 - r1) * ease);
+                            const cg = Math.round(g1 + (g2 - g1) * ease);
+                            const cb = Math.round(b1 + (b2 - b1) * ease);
+                            const alpha = 0.5 + ease * 0.3;
+
+                            ctx.beginPath();
+                            ctx.arc(x, y, radius, 0, Math.PI * 2);
+                            ctx.fillStyle = 'rgba(' + cr + ',' + cg + ',' + cb + ',' + alpha + ')';
+                            ctx.fill();
+                        }
+                    }
+                }
+
+                if (animating) {
+                    requestAnimationFrame(draw);
+                }
+            }
+
+            document.addEventListener('mousemove', function(e) {
+                mouse.x = e.clientX;
+                mouse.y = e.clientY;
+            });
+
+            document.addEventListener('mouseleave', function() {
+                mouse.x = -9999;
+                mouse.y = -9999;
+            });
+
+            window.addEventListener('resize', resize);
+
+            resize();
+            draw();
+        })();
+    </script>
+</body>
+</html>
